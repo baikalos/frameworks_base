@@ -4316,6 +4316,8 @@ public final class Settings {
         private static final Validator STATUSBAR_BATTERY_BAR_THICKNESS_VALIDATOR =
                 ANY_INTEGER_VALIDATOR;
 
+        public static final String FORCE_AMBIENT_FOR_MEDIA = "force_ambient_for_media";
+
         /**
          * @hide
          */
