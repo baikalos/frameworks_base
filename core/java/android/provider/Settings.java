@@ -8261,6 +8261,14 @@ public final class Settings {
         private static final Validator DOZE_ENABLED_VALIDATOR = BOOLEAN_VALIDATOR;
 
         /**
+         * Whether the device should doze if configured.
+         * @hide
+         */
+        public static final String DOZE_CHARGER_ENABLED = "doze_charger_enabled";
+
+        private static final Validator DOZE_CHARGER_ENABLED_VALIDATOR = BOOLEAN_VALIDATOR;
+
+        /**
          * Whether doze should be always on.
          * @hide
          */
@@ -9387,6 +9395,7 @@ public final class Settings {
                     SYSTEM_NAVIGATION_KEYS_ENABLED_VALIDATOR);
             VALIDATORS.put(QS_TILES, QS_TILES_VALIDATOR);
             VALIDATORS.put(DOZE_ENABLED, DOZE_ENABLED_VALIDATOR);
+            VALIDATORS.put(DOZE_CHARGER_ENABLED, DOZE_CHARGER_ENABLED_VALIDATOR);
             VALIDATORS.put(DOZE_PULSE_ON_PICK_UP, DOZE_PULSE_ON_PICK_UP_VALIDATOR);
             VALIDATORS.put(DOZE_PULSE_ON_DOUBLE_TAP, DOZE_PULSE_ON_DOUBLE_TAP_VALIDATOR);
             VALIDATORS.put(NFC_PAYMENT_DEFAULT_COMPONENT, NFC_PAYMENT_DEFAULT_COMPONENT_VALIDATOR);

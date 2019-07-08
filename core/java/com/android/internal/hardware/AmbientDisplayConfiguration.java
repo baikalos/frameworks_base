@@ -53,6 +53,8 @@ public class AmbientDisplayConfiguration {
 
     public boolean pulseOnNotificationEnabled(int user) {
         return (boolSettingDefaultOff(Settings.Secure.DOZE_ENABLED, user) 
+		|| (  boolSettingDefaultOff(Settings.Secure.DOZE_CHARGER_ENABLED, user) 
+		   && boolSettingDefaultOff(Settings.Secure.DOZE_CHARGER_NOW, user))
                 || alwaysOnEnabled(user) )
                 && pulseOnNotificationAvailable();
     }
@@ -163,7 +165,7 @@ public class AmbientDisplayConfiguration {
 
     public boolean alwaysOnEnabledCharger(int user) {
         return boolSetting(Settings.Secure.DOZE_CHARGER_ON, user, mAlwaysOnByDefault ? 1 : 0) &&
-               boolSetting(Settings.Secure.DOZE_CHARGER_NOW, user, mAlwaysOnByDefault ? 1 : 0)
+               boolSetting(Settings.Secure.DOZE_CHARGER_NOW, user, 0)
                 && alwaysOnAvailable() && !accessibilityInversionEnabled(user);
     }
 
