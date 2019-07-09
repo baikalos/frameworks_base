@@ -429,7 +429,7 @@ public class KeyguardIndicationController {
         }
 
         String batteryInfo = "";
-        boolean showbatteryInfo = mDozing || Settings.System.getIntForUser(mContext.getContentResolver(),
+        boolean showbatteryInfo = Settings.System.getIntForUser(mContext.getContentResolver(),
             Settings.System.LOCKSCREEN_BATTERY_INFO, 1, UserHandle.USER_CURRENT) == 1;
          if (showbatteryInfo) {
             if( mChargingSpeed == KeyguardUpdateMonitor.BatteryStatus.CHARGING_FAST ) {
@@ -468,7 +468,7 @@ public class KeyguardIndicationController {
                         percentage);
                 return chargingText + batteryInfo;
             } catch (IllegalFormatConversionException e) {
-                String chargingText = mContext.getResources().getString(chargingId, chargingTimeFormatted);
+                String chargingText =  mContext.getResources().getString(chargingId, chargingTimeFormatted);
                 return chargingText + batteryInfo;
             }
         } else {
