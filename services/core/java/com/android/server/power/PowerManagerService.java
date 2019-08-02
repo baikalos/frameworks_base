@@ -1075,6 +1075,8 @@ public final class PowerManagerService extends SystemService
                 Settings.System.PROXIMITY_ON_WAKE,
                 mProximityWakeEnabledByDefaultConfig ? 1 : 0) == 1;
 
+	Slog.e(TAG, "ProximityCheck: mProximityWakeEnabled=" + mProximityWakeEnabled);
+
         final int buttonBrightnessSetting = Settings.System.getIntForUser(resolver,
                 Settings.System.BUTTON_BRIGHTNESS, mButtonBrightnessSettingDefault,
                 UserHandle.USER_CURRENT);
@@ -4742,6 +4744,9 @@ public final class PowerManagerService extends SystemService
                 throw new IllegalArgumentException("event time must not be in the future");
             }
 
+
+	    Slog.e(TAG, "ProximityCheck: wakeUp checkProximity=" + checkProximity); 
+
             mContext.enforceCallingOrSelfPermission(
                     android.Manifest.permission.DEVICE_POWER, null);
 
@@ -4757,6 +4762,8 @@ public final class PowerManagerService extends SystemService
                     }
                 }
             };
+
+
             if (checkProximity) {
                 runWithProximityCheck(r);
             } else {
@@ -4848,8 +4855,10 @@ public final class PowerManagerService extends SystemService
             final long ident = Binder.clearCallingIdentity();
             try {
                 final int uid = Binder.getCallingUid();
-                if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) return false;
-
+                if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) {
+	    	    Slog.i(TAG, "Hide idle from GMS"); 
+                    return false;
+		}
                 return isDeviceIdleModeInternal();
             } finally {
                 Binder.restoreCallingIdentity(ident);
@@ -4861,8 +4870,10 @@ public final class PowerManagerService extends SystemService
             final long ident = Binder.clearCallingIdentity();
             try {
                 final int uid = Binder.getCallingUid();
-                if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) return false;
-
+                if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) {
+	    	    Slog.i(TAG, "Hide idle from GMS"); 
+		    return false;
+		}
                 return isLightDeviceIdleModeInternal();
             } finally {
                 Binder.restoreCallingIdentity(ident);
@@ -5259,6 +5270,14 @@ public final class PowerManagerService extends SystemService
                 (TelephonyManager) mContext.getSystemService(Context.TELEPHONY_SERVICE);
         final boolean hasIncomingCall = tm.getCallState() == TelephonyManager.CALL_STATE_RINGING;
 
+
+	Slog.e(TAG, "ProximityCheck: mProximityWakeEnabled=" + mProximityWakeEnabled 
+		+ ", mProximityWakeSupported=" + mProximityWakeSupported
+		+ ", hasIncomingCall=" + hasIncomingCall
+		+ ", mProximityTimeOut=" + mProximityTimeOut
+		+ ", mProximitySensor=" + mProximitySensor);
+
+
         if (mProximityWakeSupported && mProximityWakeEnabled
                 && mProximitySensor != null && !hasIncomingCall) {
             final Message msg = mHandler.obtainMessage(MSG_WAKE_UP);
@@ -5272,26 +5291,29 @@ public final class PowerManagerService extends SystemService
 
     private void runPostProximityCheck(final Runnable r) {
         if (mSensorManager == null) {
+	    Slog.e(TAG, "ProximityCheck: mSensorManager=null"); 
             r.run();
             return;
         }
         synchronized (mProximityWakeLock) {
             mProximityWakeLock.acquire();
+	    Slog.e(TAG, "ProximityCheck: runPostProximityCheck"); 
             mProximityListener = new SensorEventListener() {
                 @Override
                 public void onSensorChanged(SensorEvent event) {
                     cleanupProximityLocked();
                     if (!mHandler.hasMessages(MSG_WAKE_UP)) {
-                        Slog.w(TAG, "Proximity sensor took too long, wake event already triggered!");
+                        Slog.w(TAG, "ProximityCheck: Proximity sensor took too long, wake event already triggered!");
                         return;
                     }
                     mHandler.removeMessages(MSG_WAKE_UP);
                     final float distance = event.values[0];
                     if (distance >= PROXIMITY_NEAR_THRESHOLD ||
                             distance >= mProximitySensor.getMaximumRange()) {
+                        Slog.w(TAG, "ProximityCheck: distance=" + distance );
                         r.run();
                     } else {
-                        Slog.w(TAG, "Not waking up. Proximity sensor is blocked.");
+                        Slog.w(TAG, "ProximityCheck: Not waking up. Proximity sensor is blocked.");
                     }
                 }
 
