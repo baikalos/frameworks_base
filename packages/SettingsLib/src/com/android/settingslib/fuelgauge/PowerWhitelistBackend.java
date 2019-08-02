@@ -70,6 +70,9 @@ public class PowerWhitelistBackend {
     }
 
     public boolean isWhitelisted(String pkg) {
+
+	if( pkg == null ) return false;
+
         if (mWhitelistedApps.contains(pkg)) {
             return true;
         }
