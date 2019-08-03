@@ -53,7 +53,7 @@ public final class DeviceIdleJobsController extends StateController {
     private static final boolean DEBUG = JobSchedulerService.DEBUG
             || Log.isLoggable(TAG, Log.DEBUG);
 
-    private static final long BACKGROUND_JOBS_DELAY = 3000;
+    private static final long BACKGROUND_JOBS_DELAY = 10000;
 
     static final int PROCESS_BACKGROUND_JOBS = 1;
 
