@@ -4819,8 +4819,16 @@ public final class PowerManagerService extends SystemService
 
         @Override // Binder call
         public boolean isPowerSaveMode() {
+
+            final int uid = Binder.getCallingUid();
+
             final long ident = Binder.clearCallingIdentity();
             try {
+	    	if( DEBUG ) Slog.i(TAG, "isPowerSaveMode uid=" + uid); 
+                if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) {
+	    	    if( DEBUG ) Slog.i(TAG, "Hide PowerSave from GMS"); 
+                    return false;
+		}
                 return mBatterySaverController.isEnabled();
             } finally {
                 Binder.restoreCallingIdentity(ident);
@@ -4852,11 +4860,14 @@ public final class PowerManagerService extends SystemService
 
         @Override // Binder call
         public boolean isDeviceIdleMode() {
+
+            final int uid = Binder.getCallingUid();
+
             final long ident = Binder.clearCallingIdentity();
             try {
-                final int uid = Binder.getCallingUid();
+	    	if( DEBUG ) Slog.i(TAG, "isDeviceIdleMode uid=" + uid); 
                 if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) {
-	    	    Slog.i(TAG, "Hide idle from GMS"); 
+	    	    if( DEBUG ) Slog.i(TAG, "Hide idle from GMS"); 
                     return false;
 		}
                 return isDeviceIdleModeInternal();
@@ -4867,11 +4878,14 @@ public final class PowerManagerService extends SystemService
 
         @Override // Binder call
         public boolean isLightDeviceIdleMode() {
+
+            final int uid = Binder.getCallingUid();
+
             final long ident = Binder.clearCallingIdentity();
             try {
-                final int uid = Binder.getCallingUid();
+	    	if( DEBUG ) Slog.i(TAG, "isLightDeviceIdleMode uid=" + uid); 
                 if( BaikalService.isGmsUid(uid) && BaikalService.gmsHideIdle() ) {
-	    	    Slog.i(TAG, "Hide idle from GMS"); 
+	    	    if( DEBUG ) Slog.i(TAG, "Hide idle from GMS"); 
 		    return false;
 		}
                 return isLightDeviceIdleModeInternal();
