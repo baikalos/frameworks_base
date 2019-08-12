@@ -201,6 +201,7 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
         // TODO(b/62444020): remove when this bug is fixed
         Log.v(TAG, "startWakeAndUnlock(" + mode + ")");
         boolean wasDeviceInteractive = mUpdateMonitor.isDeviceInteractive();
+        Log.i(TAG, "startWakeAndUnlock: wasDeviceInteractive=" + wasDeviceInteractive);
         mMode = mode;
         mHasScreenTurnedOnSinceAuthenticating = false;
         if (mMode == MODE_WAKE_AND_UNLOCK_PULSING && pulsingOrAod()) {
@@ -208,12 +209,17 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
             // notifications would light up first, creating an unpleasant animation.
             // Defer changing the screen brightness by forcing doze brightness on our window
             // until the clock and the notifications are faded out.
+            Log.i(TAG, "startWakeAndUnlock: setForceDozeBrightness");
             mStatusBarWindowManager.setForceDozeBrightness(true);
         }
         // During wake and unlock, we need to draw black before waking up to avoid abrupt
         // brightness changes due to display state transitions.
         boolean alwaysOnEnabled = DozeParameters.getInstance(mContext).getAlwaysOn();
-        boolean delayWakeUp = mode == MODE_WAKE_AND_UNLOCK && alwaysOnEnabled;
+        boolean delayWakeUp = false; // mode == MODE_WAKE_AND_UNLOCK && alwaysOnEnabled;
+
+        Log.i(TAG, "startWakeAndUnlock: alwaysOnEnabled=" + alwaysOnEnabled +
+		   ", delayWakeUp=" + delayWakeUp);
+
         Runnable wakeUp = ()-> {
             if (!wasDeviceInteractive) {
                 if (DEBUG_FP_WAKELOCK) {
@@ -235,6 +241,7 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
         switch (mMode) {
             case MODE_DISMISS_BOUNCER:
                 Trace.beginSection("MODE_DISMISS");
+	        Log.i(TAG, "startWakeAndUnlock: MODE_DISMISS_BOUNCER");
                 mStatusBarKeyguardViewManager.notifyKeyguardAuthenticated(
                         false /* strongAuth */);
                 Trace.endSection();
@@ -242,6 +249,7 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
             case MODE_UNLOCK:
             case MODE_SHOW_BOUNCER:
                 Trace.beginSection("MODE_UNLOCK or MODE_SHOW_BOUNCER");
+	        Log.i(TAG, "startWakeAndUnlock: MODE_UNLOCK or MODE_SHOW_BOUNCER");
                 if (!wasDeviceInteractive) {
                     mStatusBarKeyguardViewManager.notifyDeviceWakeUpRequested();
                     mPendingShowBouncer = true;
@@ -255,12 +263,15 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
             case MODE_WAKE_AND_UNLOCK:
                 if (mMode == MODE_WAKE_AND_UNLOCK_PULSING) {
                     Trace.beginSection("MODE_WAKE_AND_UNLOCK_PULSING");
+	            Log.i(TAG, "startWakeAndUnlock: MODE_WAKE_AND_UNLOCK_PULSING");
                     mStatusBar.updateMediaMetaData(false /* metaDataChanged */,
                             true /* allowEnterAnimation */);
                 } else if (mMode == MODE_WAKE_AND_UNLOCK){
                     Trace.beginSection("MODE_WAKE_AND_UNLOCK");
+	            Log.i(TAG, "startWakeAndUnlock: MODE_WAKE_AND_UNLOCK");
                 } else {
                     Trace.beginSection("MODE_WAKE_AND_UNLOCK_FROM_DREAM");
+	            Log.i(TAG, "startWakeAndUnlock: MODE_WAKE_AND_UNLOCK_FROM_DREAM");
                     mUpdateMonitor.awakenFromDream();
                 }
                 mStatusBarWindowManager.setStatusBarFocusable(false);
@@ -272,6 +283,7 @@ public class FingerprintUnlockController extends KeyguardUpdateMonitorCallback {
                 break;
             case MODE_ONLY_WAKE:
             case MODE_NONE:
+	            Log.i(TAG, "startWakeAndUnlock: MODE_ONLY_WAKE or MODE_NONE");
                 break;
         }
         mStatusBar.notifyFpAuthModeChanged();
