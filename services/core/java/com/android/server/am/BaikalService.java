@@ -2534,12 +2534,14 @@ public class BaikalService extends SystemService {
 
     public static boolean gmsHideIdle() {
         synchronized(mStaticMembersLock) {
+   	    //Slog.i(TAG, "gmsHideIdle=" + mHideIdleFromGms); 
             return mHideIdleFromGms;
         }
     }
 
     public static boolean idleUnrestrictedNetwork() {
         synchronized(mStaticMembersLock) {
+   	    //Slog.i(TAG, "idleUnrestrictedNetwork=" + mUnrestrictedNetwork); 
             return mUnrestrictedNetwork;
         }
     }

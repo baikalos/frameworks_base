@@ -344,10 +344,16 @@ final class PendingIntentRecord extends IIntentSender.Stub {
                                 allResolvedTypes[allResolvedTypes.length-1] = resolvedType;
 
                                 res = owner.getActivityStartController().startActivitiesInPackage(
+<<<<<<< HEAD
                                         uid, key.packageName, allIntents, allResolvedTypes,
                                         resultTo, mergedOptions, userId,
                                         false /* validateIncomingUser */,
                                         this /* originatingPendingIntent */);
+=======
+                                        uid, callingPid, callingUid, key.packageName, allIntents,
+                                        allResolvedTypes, resultTo, mergedOptions, userId,
+                                        false /* validateIncomingUser */);
+>>>>>>> android-9.0.0_r49
                             } else {
                                 res = owner.getActivityStartController().startActivityInPackage(uid,
                                         callingPid, callingUid, key.packageName, finalIntent,
