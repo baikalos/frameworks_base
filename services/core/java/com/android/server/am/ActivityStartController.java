@@ -285,15 +285,11 @@ public class ActivityStartController {
      */
     final int startActivitiesInPackage(int uid, String callingPackage, Intent[] intents,
             String[] resolvedTypes, IBinder resultTo, SafeActivityOptions options, int userId,
-<<<<<<< HEAD
-            boolean validateIncomingUser, PendingIntentRecord originatingPendingIntent) {
-=======
             boolean validateIncomingUser) {
         return startActivitiesInPackage(uid, 0, UserHandle.USER_NULL,
              callingPackage, intents, resolvedTypes, resultTo, options, userId,
              validateIncomingUser);
     }
->>>>>>> android-9.0.0_r49
 
     final int startActivitiesInPackage(int uid, int realCallingPid, int realCallingUid,
             String callingPackage, Intent[] intents, String[] resolvedTypes, IBinder resultTo,
@@ -304,15 +300,6 @@ public class ActivityStartController {
                 Binder.getCallingUid(), reason);
 
         // TODO: Switch to user app stacks here.
-<<<<<<< HEAD
-        return startActivities(null, uid, callingPackage, intents, resolvedTypes, resultTo, options,
-                userId, reason, originatingPendingIntent);
-    }
-
-    int startActivities(IApplicationThread caller, int callingUid, String callingPackage,
-            Intent[] intents, String[] resolvedTypes, IBinder resultTo, SafeActivityOptions options,
-            int userId, String reason, PendingIntentRecord originatingPendingIntent) {
-=======
         return startActivities(null, uid, realCallingPid, realCallingUid, callingPackage, intents,
                 resolvedTypes, resultTo, options, userId, reason);
     }
@@ -320,7 +307,6 @@ public class ActivityStartController {
     int startActivities(IApplicationThread caller, int callingUid, int incomingRealCallingPid,
             int incomingRealCallingUid, String callingPackage, Intent[] intents, String[] resolvedTypes,
             IBinder resultTo, SafeActivityOptions options, int userId, String reason) {
->>>>>>> android-9.0.0_r49
         if (intents == null) {
             throw new NullPointerException("intents is null");
         }
@@ -402,7 +388,6 @@ public class ActivityStartController {
                             // Top activity decides on animation being run, so we allow only for the
                             // top one as otherwise an activity below might consume it.
                             .setAllowPendingRemoteAnimationRegistryLookup(top /* allowLookup*/)
-                            .setOriginatingPendingIntent(originatingPendingIntent)
                             .execute();
 
                     if (res < 0) {

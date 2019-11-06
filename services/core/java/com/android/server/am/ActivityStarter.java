@@ -372,12 +372,7 @@ class ActivityStarter {
             mayWait = false;
             avoidMoveToFront = false;
             allowPendingRemoteAnimationRegistryLookup = true;
-<<<<<<< HEAD
-            filterCallingUid = UserHandle.USER_NULL;
-            originatingPendingIntent = null;
-=======
             filterCallingUid = DEFAULT_REAL_CALLING_UID;
->>>>>>> android-9.0.0_r49
         }
 
         /**
