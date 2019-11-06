@@ -25307,7 +25307,10 @@ public class ActivityManagerService extends IActivityManager.Stub
                 int kill = 0;
                 if( mBaikalService != null ) {
                     kill = mBaikalService.killByOOM(app, TOP_APP, mHomeProcess, mPreviousProcess);
-                }
+                } else {
+		    Slog.d(TAG,"mBaikalService == null!!!!!!!!!!!!!!!!");
+		    kill = 1;
+		}
                 if( kill == 2 ) {
                     app.kill("by baikalos service", true);
                 } else if (kill == 0) {
@@ -26725,11 +26728,11 @@ public class ActivityManagerService extends IActivityManager.Stub
             }
 
             synchronized (ActivityManagerService.this) {
-                return mActivityStartController.startActivitiesInPackage(
+		return mActivityStartController.startActivitiesInPackage(
                         packageUid, packageName,
                         intents, resolvedTypes, null /* resultTo */,
                         SafeActivityOptions.fromBundle(bOptions), userId,
-                        false /* validateIncomingUser */, null /* originatingPendingIntent */);
+                        false /* validateIncomingUser */);
             }
         }
 

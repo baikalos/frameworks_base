@@ -1484,12 +1484,21 @@ public class BaikalService extends SystemService {
 
         if( app == top_app ) return 1;
         if( app == home_app ) return 1;
-        if( app.info.uid < Process.FIRST_APPLICATION_UID  ) return 0;
-	    if( !mExtremeSaverActive ) {
+        if( app.info.uid < Process.FIRST_APPLICATION_UID  ) return 1;
+
+    	if( isAppPackageWhitelisted(app.info.packageName) ) return 1;
+
+        ApplicationProfileInfo appInfo = getAppProfileInternal(app.info.packageName);
+
+        int restriction = isAppRestricted(appInfo, app.info.uid, app.info.packageName);
+        
+        if( restriction == 1 ) return 1;
+
+        if( !mExtremeSaverActive ) {
             if( getWakefulnessLocked() == 1 ) return 0;
-	        if( !mIdleAggressive ) return 0;
-	        if( !mDeviceIdleMode ) return 0;
-	    }
+	    if( !mIdleAggressive ) return 0;
+	    if( !mDeviceIdleMode ) return 0;
+	}
 
         if( isGmsUid(app.info.uid) ) { 
 	        if( (mDeviceIdleMode && mIdleAggressive) || mExtremeSaverActive ) {
@@ -1537,13 +1546,7 @@ public class BaikalService extends SystemService {
 	        return 1;
 	    }
 
-    	if( isAppPackageWhitelisted(app.info.packageName) ) return 1;
-
-        ApplicationProfileInfo appInfo = getAppProfileInternal(app.info.packageName);
-
-        int restriction = isAppRestricted(appInfo, app.info.uid, app.info.packageName);
         
-        if( restriction == 1 ) return 1;
         if( restriction == 0 ) return 0;
 
         switch (app.curProcState) {
